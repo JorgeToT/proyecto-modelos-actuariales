@@ -1,0 +1,325 @@
+<center style="margin: 20px 70px">
+# Ajuste de distribución de probabilidad a montos de pago de Siniestros de Credito a la Vivienda durante el 2020
+</center>
+<br>
+<center style="font-size:16px">Martha Paola Hernández Soto</center>
+<center style="font-size:16px">Modelos Actuariales</center>
+<br>
+<center style="font-size:16px">Jorge Aguilar Velázquez</center>
+<center style="font-size:16px">2022-11-18</center>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introducción.
+<div style="font-size:15px; text-align:justify">
+El presente trabajo tiene como objetivo desarrollar un ajuste de distribución (Log-Normal, Pareto, Weibull, Log-Gamma, Log-Logística) y también métodos no parámetricos (Kernel Uniforme, Triangular, Gamma), para un conjunto de datos que representan los montos pagados de créditos de vivienda durante el año 2020, la base de datos fue obtenida de los datos abiertos de la Comisión Nacional de Seguros y Fianzas y contiene un total de 324 observaciones.
+</div>
+
+## Marco Teórico.
+<div style="font-size:15px; text-align:justify">
+
+### Distribuciones de probabilidad
+La distribución de probabilidad es la función matemática que da las probabilidades de ocurrencia de diferentes resultados posibles para un experimento.Es una descripción matemática de un fenómeno aleatorio en términos de su espacio muestral y las probabilidades de eventos (subconjuntos del espacio muestral)
+
+Para las distribuciones de las que haremos uso, a continuación se define su función de distribución de probabilidad.
+
+#### Distribución Log-Normal.
+$f (x) = \displaystyle {\frac {1}{x\sigma {\sqrt {2\pi }}}}\exp \left(-{\frac {(\ln x-\mu )^{2}}{2\sigma ^{2}}}\right){\text{, donde }}x>0$
+
+<br>
+
+#### Distribución Pareto.
+$f (x) = \displaystyle {\frac {\alpha \,x_{\mathrm {m} }^{\alpha }}{x^{\alpha +1}}}{\text{, donde }}x>x_{m}\!$
+
+<br>
+
+#### Distribución Weibull.
+$f (x) = \displaystyle \lambda \alpha (\lambda x)^{\alpha -1}e^{-(\lambda x)^{\alpha }}{\text{, donde }}x>0$
+
+<br>
+
+#### Distribución Log-Gamma.
+$f (x) = \frac {e ^ {\beta x} e ^ {\frac {-e ^ x} {\alpha}}} {\alpha ^ \beta \Gamma (\beta)} \ \, donde - \infty \gt x \lt \infty$
+
+<br>
+
+#### Distribución Log-Logística.
+$f (x) = \displaystyle {\frac {e^{-(x-\mu )/s}}{s\left(1+e^{-(x-\mu )/s}\right)^{2}}}{\text{, donde }}x>0\!$
+
+<br>
+
+### Kernel
+Los métodos de estimación de densidad kernel, se utilizan para estimar densidades de datos que no tienen comportamientos estadisticos paramétricos.
+
+Las funciones obtenidas de estos métodos cumplen las siguientes caracteristicas:
+
+- Continuidad
+- Simetría
+- Positivas
+
+Estas funciones permiten convertir lo que sería un problema de clasificación no lineal en el espacio dimensional original, a un sencillo problema de clasificación lineal en un espacio dimensional mayor.
+
+<br>
+
+#### Kernel Uniforme.
+$k_{yj} (x) = \displaystyle {\frac {1}{2b}} ;\ \ y-b<x<y+b\!$
+
+$k_{yj} (x) = \displaystyle 0 ;\ \ o.t.w.\!$
+
+<br>
+
+#### Kernel Triangular.
+$k_{yj} (x) = \displaystyle {\frac {x-y+b}{b^2}} ;\ \ y-b<x<y\!$
+
+$k_{yj} (x) = \displaystyle {\frac {y+b-x}{b^2}} ;\ \ y<x<y+b\!$
+
+$k_{yj} (x) = \displaystyle 0 ;\ \ o.t.w.\!$
+
+<br>
+
+#### Kernel Gamma.
+$k_{yj} (x) = \displaystyle {\frac {(\frac {2x}{y})^2e^{-(\frac{ax}{y})}}{2b}} ;\ \ 0<x\!$
+
+<br>
+
+#### Prueba K-S.
+La prueba de Kolmogorov-Smirnov (Chakravart, Laha y Roy, 1967) se utiliza para decidir si una muestra proviene de una población con una distribución específica.
+
+A pesar de estas ventajas, la prueba K-S tiene varias limitaciones importantes:
+- Sólo se aplica a las distribuciones continuas.
+- Tiende a ser más sensible cerca del centro de la distribución que en las colas.
+- Quizás la limitación más seria es que la distribución debe especificarse completamente. Es decir, si los parámetros de ubicación, escala y forma se estiman a partir de los datos, la región crítica de la prueba K-S ya no es válida. Por lo general, debe determinarse mediante simulación.
+
+La prueba de Kolmogorov-Smirnov se define por:
+
+- H0: Los datos siguen una distribución específica
+
+- Ha: Los datos no siguen la distribución especificada
+
+<br>
+
+#### Prueba A-D.
+La prueba de Anderson-Darling (Stephens, 1974) se usa para probar si una muestra de datos proviene de una población con una distribución específica. Es una modificación de la prueba de Kolmogorov-Smirnov (K-S) y da más peso a las colas que la prueba de K-S.
+
+La prueba de Anderson-Darling se define como:
+
+- H0: Los datos siguen una distribución específica.
+
+- Ha: Los datos no siguen la distribución especificada
+
+<br>
+
+#### Prueba Chi-Cuadrada.
+La prueba de chi-cuadrado (Snedecor y Cochran, 1989) se usa para probar si una muestra de datos proviene de una población con una distribución específica.
+
+Una característica atractiva de la prueba de bondad de ajuste chi-cuadrado es que se puede aplicar a cualquier distribución univariada para la que se pueda calcular la función de distribución acumulativa. La prueba de bondad de ajuste chi-cuadrado se aplica a datos agrupados (es decir, datos colocados en clases).
+
+La prueba de chi-cuadrado se define para la hipótesis:
+
+- H0: Los datos siguen una distribución específica.
+
+- Ha: Los datos no siguen la distribución especificada.
+
+<br>
+</div>
+
+## Metodología.
+<div style="font-size:15px; text-align:justify">
+Lo que se realizará es mediante una serie de librerías que ofrece R buscaremos estimar los mejores párametros para las distribuciones anteriormente mencionadas y para los métodos no parámetricos, para luego comparar los modelos resultantes por medio de pruebas de bondad de ajuste como la K-S, A-D, y Chi Cuadrada.
+</div>
+
+## Desarrollo.
+<div style="font-size:15px; text-align:justify">
+Empezamos importando todas las librerias de las que haremos uso, para graficar, para ajustar a las distribuciones, para los distintos kernel que utilizaremos, y algunas librerías complementarías.
+</div>
+
+```{r, message=FALSE}
+library(ggplot2)
+library(actuar)
+library(survival)
+library(MASS)
+library(fitdistrplus)
+library(moments)
+library(nortest)
+library(sandwich)
+library(momentfit)
+library(grid)
+library(vcd)
+library(fdth)
+library(openxlsx)
+library(kdensity)
+```
+
+<div style="font-size:15px; text-align:justify">
+Despues comenzaremos a limpiar los datos, para este trabajo decidí hacer uso de sólo una muestra de 98 datos, omitiendo los valores que contienen 0, para no tener posibles problemas con las distribuciones que no estén definidas en 0.
+</div>
+
+```{r}
+db = read.csv("./db.csv")
+
+db_clean = data.frame("Monto Pagado"=db$MONTO.PAGADO/10000)
+db_clean = db_clean[c(1:100),]
+
+print(paste("El número total de datos NA es: ",sum(is.na(db_clean))))
+
+print(paste("El número total de datos iguales a 0 es: ",sum(db_clean==0)))
+
+db_clean = data.frame("Monto Pagado"=db_clean)
+db_clean = db_clean[db_clean>0,]
+
+data = data.frame("Monto Pagado"=db_clean)
+```
+
+<div style="font-size:15px; text-align:justify">
+A continuación se presenta un pequeño resumen de los datos que estaremos considerando en esta muestra, junto con una pequeña grafica de densidad de la muestra.
+</div>
+
+```{r, echo=FALSE}
+summary(data$Monto.Pagado)
+
+plot(density(data$Monto.Pagado), main="Densidad de probabilidad")
+```
+
+#### Log-Normal
+<div style="font-size:15px; text-align:justify">
+Empezaremos ajustando los datos para la distribución Log-Normal.
+</div>
+
+```{r, echo=FALSE}
+#LogNormal
+
+fitlogn<-fitdist(data$Monto.Pagado, "lnorm", method = "mle")
+summary(fitlogn)
+confint(fitlogn)
+
+cdfcomp(fitlogn)
+```
+
+#### Pareto
+<div style="font-size:15px; text-align:justify">
+Ahora ajustando los datos para la distribución Pareto.
+</div>
+
+```{r, echo=FALSE}
+#Pareto
+
+fitpar<-fitdist(data$Monto.Pagado, "pareto", method = "mle")
+
+summary(fitpar)
+confint(fitpar)
+
+cdfcomp(fitpar)
+```
+
+#### Weibull
+<div style="font-size:15px; text-align:justify">
+Y ajustando los datos para la distribución Weibull.
+</div>
+
+```{r, echo=FALSE}
+#Weibull
+
+fitweibull<-fitdist(data$Monto.Pagado, "weibull", method="mle")
+summary(fitweibull)
+confint(fitweibull)
+
+cdfcomp(fitweibull)
+```
+
+#### Log-Gamma
+<div style="font-size:15px; text-align:justify">
+Continuamos ajustando los datos para la distribución Log-Gamma.
+</div>
+
+```{r, echo=FALSE}
+#Log-Gamma
+
+fitlgamma<-fitdist(data$Monto.Pagado, "lgamma", method="mle")
+summary(fitlgamma)
+confint(fitlgamma)
+
+cdfcomp(fitlgamma)
+```
+
+#### Log-Logistica
+<div style="font-size:15px; text-align:justify">
+Para finalizar ajustando los datos para la distribución Log-Normal.
+</div>
+
+```{r, echo=FALSE}
+#Log-Logistica
+
+fitllog<-fitdist(data$Monto.Pagado, "llogis", method="mle")
+summary(fitllog)
+confint(fitllog)
+
+cdfcomp(fitllog)
+```
+
+<div style="font-size:15px; text-align:justify">
+A partir del método de comparación gráfico podemos concluir que aparentemente la distribución que mejor se acomoda a los datos podría ser la distribución Log-Gamma, pero esto no es el mejor método para concluir este tipo de cosas, por lo que vamos a hacer las pruebas pertinentes para poder concluir de una mejor forma lo que necesitamos.
+
+A continuación se desglosa una serie detallada de valores obtenidos a partir de la pruebas mencionadas en el marco teorico que nos servirán para ver cual es la mejor distribución para nuestra muestra.
+</div>
+
+```{r echo=FALSE}
+gofstat(list(fitlogn,fitpar,fitweibull,fitlgamma,fitllog), fitnames = c("Log-Normal", "Pareto","Weibull","Log-Gamma","Log-Logistica"))
+gofstat(list(fitlogn,fitpar,fitweibull,fitlgamma,fitllog), fitnames = c("Log-Normal", "Pareto","Weibull","Log-Gamma","Log-Logistica"))[3]
+gofstat(list(fitlogn,fitpar,fitweibull,fitlgamma,fitllog), fitnames = c("Log-Normal", "Pareto","Weibull","Log-Gamma","Log-Logistica"))[9]
+gofstat(list(fitlogn,fitpar,fitweibull,fitlgamma,fitllog), fitnames = c("Log-Normal", "Pareto","Weibull","Log-Gamma","Log-Logistica"))[11]
+```
+
+
+#### Ajuste no parámetrico (Kernel)
+
+<div style="font-size:15px; text-align:justify">
+Ahora vamos a realizar la creación de los kernel uniforme, triangular y gamma para mediante una grafica poder ver cual es la que se ajusta mejor al modelo.
+</div>
+
+```{r, echo=FALSE}
+kunif <- density(data$Monto.Pagado, kernel = "rectangular")
+ktriang <- density(data$Monto.Pagado, kernel = "triangular")
+kgamma <- kdensity(data$Monto.Pagado, kernel = "gamma")
+```
+
+```{r}
+plot(density(data$Monto.Pagado), col = "green", lwd=4, main = "Monto Pagado")
+lines(kunif, col = "blue", lwd=2)
+lines(ktriang, col = "orange", lwd=2)
+lines(kgamma, col = "red", lwd=2)
+```
+
+## Conclusiones.
+
+<div style="font-size:15px; text-align:justify">
+La conclusión a la que podemos llegar tras realizar este trabajo es que para la parte de las distribuciones, fácilmente podemos descartar la distribución Burr porque la prueba A-D directamente rechaza H0, para todas las demás distribuciones, los test no rechazan H0 por lo que podriamos concluir que para la distribución Log-Normal, Pareto, Log-Gamma y Log-Logistica la muestra se ajusta muy bien para los parámetros estimados en el proceso.
+
+Pero el objetivo era encontrar la mejor distribución por lo que el trabajo aquí no termina, tomando en cuenta el criterio de Akaike donde nos menciona que entre menor sea el valor del AIC el modelo tiende a ser mejor, y de entre todos los modelos elegidos el que tiene el menor AIC es el de la distribución Log-Normal, por lo que para este trabajo y esta muestra de datos el resultado será que **la distribución Log-Normal es donde mejor se ajustan nuestros datos**.
+
+```{r echo=FALSE}
+gofstat(fitlogn, fitnames = "Log-Normal")
+gofstat(fitlogn, fitnames = "Log-Normal")[3]
+gofstat(fitlogn, fitnames = "Log-Normal")[9]
+gofstat(fitlogn, fitnames = "Log-Normal")[11]
+
+cdfcomp(fitlogn)
+```
+
+Y para el lado del método no párametrico, podemos concluir que el **Kernel triangular (naranja) cuenta con el mejor ajuste con la muestra (verde)** de los 3 utilizados.
+
+```{r, echo=FALSE}
+plot(density(data$Monto.Pagado), col = "green", lwd=4, main = "Monto Pagado")
+lines(ktriang, col = "orange", lwd=2)
+```
+</div>
+
+## Bibliografía.
+- Broverman, Samuel. (2009). ACTEX STUDY MANUAL SOA EXAM C CAS EXAM 4. Estados Unidos: Actex publications
+- Klugman, S. (2012). Loss Models. Estados Unidos: John Wiley & Sons, Inc
+- TRANSPARENCIA DATOS ABIERTOS. (s. f.). https://www.cnsf.gob.mx/Transparencia/Paginas/DatosAbiertos.aspx
+- fitdist function - RDocumentation. (s. f.). https://www.rdocumentation.org/packages/fitdistrplus/versions/1.1-8/topics/fitdist
+- 1.3.5.14. Anderson-Darling Test. (s. f.). https://www.itl.nist.gov/div898/handbook/eda/section3/eda35e.htm
+- 1.3.5.15. Chi-Square Goodness-of-Fit Test. (s. f.). https://www.itl.nist.gov/div898/handbook/eda/section3/eda35f.htm
+- 1.3.5.16. Kolmogorov-Smirnov Goodness-of-Fit Test. (s. f.). https://www.itl.nist.gov/div898/handbook/eda/section3/eda35g.htm
